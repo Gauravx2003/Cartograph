@@ -5,18 +5,6 @@ export const createRepo = async (req: Request, res: Response, next: NextFunction
   try {
     const { owner, name, githubRepoId, defaultBranch, isPrivate } = req.body;
     
-    // Create a dummy user for the sake of bypassing auth in this step
-    let user = await prisma.user.findFirst();
-    if (!user) {
-      user = await prisma.user.create({
-        data: {
-          githubId: 'dummy-github-id',
-          username: 'dummyuser',
-          accessTokenEnc: 'dummy-token',
-        }
-      });
-    }
-
     const repo = await prisma.repo.create({
       data: {
         githubRepoId: githubRepoId || `dummy-${Date.now()}`,
@@ -25,7 +13,7 @@ export const createRepo = async (req: Request, res: Response, next: NextFunction
         fullName: `${owner || 'dummy-owner'}/${name || 'dummy-repo'}`,
         defaultBranch: defaultBranch || 'main',
         isPrivate: isPrivate || false,
-        connectedById: user.id
+        connectedById: req.user?.id || null
       }
     });
     

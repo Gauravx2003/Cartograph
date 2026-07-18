@@ -34,6 +34,7 @@ model User {
   updatedAt        DateTime @updatedAt
 
   repos            Repo[]
+  scansRequested   Scan[]
 
   @@map("users")
 }
@@ -50,8 +51,8 @@ model Repo {
   fullName        String   // "owner/name"
   defaultBranch   String
   isPrivate       Boolean  @default(false)
-  connectedById   String
-  connectedBy     User     @relation(fields: [connectedById], references: [id])
+  connectedById   String?
+  connectedBy     User?    @relation(fields: [connectedById], references: [id])
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
@@ -81,6 +82,11 @@ model Scan {
   repo              Repo       @relation(fields: [repoId], references: [id])
   status            ScanStatus @default(QUEUED)
   commitSha         String?    // HEAD sha at time of scan, set once cloning completes
+  isAnonymous       Boolean    @default(false)
+  requestedById     String?
+  requestedBy       User?      @relation(fields: [requestedById], references: [id])
+  requesterIp       String?
+  explanationsRequested Boolean @default(false)
   churnWindowMonths Int        @default(6)
   fileCount         Int?
   errorMessage      String?
