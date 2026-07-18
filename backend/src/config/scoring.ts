@@ -1,0 +1,8 @@
+export const SCORING_CONFIG = {
+  WEIGHTS: {
+    CHURN: 0.4,
+    COMPLEXITY: 0.4,
+    OWNERSHIP: 0.2,
+  },
+  BUS_FACTOR_THRESHOLD: 0.8,
+};

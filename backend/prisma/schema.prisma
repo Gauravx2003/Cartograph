@@ -1,0 +1,181 @@
+// Cartograph — Prisma schema
+// Maps to PRD sections: 7.1 (Repo Ingestion), 7.2 (Risk Scoring Engine),
+// 7.3 (Visualization / file detail panel), 7.4 (AI Explanations), 7.5 (Reports)
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma" 
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Repository {
+  id        String   @id @default(uuid())
+  name      String
+  url       String
+  createdAt DateTime @default(now())
+
+  @@map("repository")
+}
+
+// ---------------------------------------------------------------------------
+// Auth / Users
+// ---------------------------------------------------------------------------
+model User {
+  id               String   @id @default(cuid())
+  githubId         String   @unique
+  username         String
+  avatarUrl        String?
+  // Store encrypted at the application layer — never plaintext.
+  accessTokenEnc   String
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  repos            Repo[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// Repos
+// ---------------------------------------------------------------------------
+
+model Repo {
+  id              String   @id @default(cuid())
+  githubRepoId    String   @unique
+  owner           String
+  name            String
+  fullName        String   // "owner/name"
+  defaultBranch   String
+  isPrivate       Boolean  @default(false)
+  connectedById   String
+  connectedBy     User     @relation(fields: [connectedById], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  scans           Scan[]
+
+  @@index([connectedById])
+  @@map("repos")
+}
+
+// ---------------------------------------------------------------------------
+// Scans — one run of the analysis pipeline against a repo at a given commit
+// ---------------------------------------------------------------------------
+
+enum ScanStatus {
+  QUEUED
+  CLONING
+  ANALYZING
+  SCORING
+  GENERATING_EXPLANATIONS
+  COMPLETED
+  FAILED
+}
+
+model Scan {
+  id                String     @id @default(cuid())
+  repoId            String
+  repo              Repo       @relation(fields: [repoId], references: [id])
+  status            ScanStatus @default(QUEUED)
+  commitSha         String?    // HEAD sha at time of scan, set once cloning completes
+  churnWindowMonths Int        @default(6)
+  fileCount         Int?
+  errorMessage      String?
+  startedAt         DateTime?
+  completedAt       DateTime?
+  createdAt         DateTime   @default(now())
+
+  // Self-relation pointing at the prior scan for the same repo, if any.
+  // Not used for any trend UI in v1 (out of scope per PRD §8) — just keeps
+  // scans chainable so trend/diff features can be added later without a
+  // migration.
+  previousScanId    String?
+  previousScan      Scan?      @relation("ScanHistory", fields: [previousScanId], references: [id])
+  nextScans         Scan[]     @relation("ScanHistory")
+
+  fileScores        FileScore[]
+  reports           Report[]
+
+  @@index([repoId, createdAt])
+  @@map("scans")
+}
+
+// ---------------------------------------------------------------------------
+// File-level scores — the core output of the scoring engine (PRD §10)
+// ---------------------------------------------------------------------------
+
+model FileScore {
+  id                    String   @id @default(cuid())
+  scanId                String
+  scan                  Scan     @relation(fields: [scanId], references: [id])
+  filePath              String
+
+  // Raw signals (from churn/complexity/ownership services — PRD §7.2)
+  churnCount            Int
+  complexityCyclomatic  Int
+  complexityMaxNesting  Int
+  fileLengthLines       Int
+  uniqueContributors    Int
+  topContributorPct     Float
+
+  // Normalized / derived values feeding the risk formula (PRD §10)
+  normalizedChurn       Float
+  normalizedComplexity  Float
+  busFactorPenalty      Float
+
+  // Final combined score, repo-relative (0-1)
+  riskScore             Float
+
+  // LLM output — only populated for top-N flagged files (PRD §7.4)
+  explanation           String?
+
+  createdAt             DateTime @default(now())
+
+  contributors          FileContributor[]
+
+  @@index([scanId, riskScore])
+  @@unique([scanId, filePath])
+  @@map("file_scores")
+}
+
+// ---------------------------------------------------------------------------
+// Per-file contributor breakdown — powers the file detail panel's
+// contributor list (PRD §7.3)
+// ---------------------------------------------------------------------------
+
+model FileContributor {
+  id              String    @id @default(cuid())
+  fileScoreId     String
+  fileScore       FileScore @relation(fields: [fileScoreId], references: [id])
+  name            String
+  email           String
+  commitCount     Int
+  percentage      Float
+
+  @@index([fileScoreId])
+  @@map("file_contributors")
+}
+
+// ---------------------------------------------------------------------------
+// Reports — exportable summaries (PRD §7.5)
+// ---------------------------------------------------------------------------
+
+enum ReportFormat {
+  PDF
+  LINK
+}
+
+model Report {
+  id         String       @id @default(cuid())
+  scanId     String
+  scan       Scan         @relation(fields: [scanId], references: [id])
+  format     ReportFormat
+  url        String?      // storage URL for PDF, or shareable link slug
+  createdAt  DateTime     @default(now())
+
+  @@index([scanId])
+  @@map("reports")
+}
