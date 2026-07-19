@@ -21,10 +21,14 @@ for the top-N riskiest files only.
    in PRD §10. Treat the weights as constants pulled from one config location,
    not hardcoded in multiple places — they will be tuned.
 3. Job/queue plumbing (BullMQ) to run analysis async.
-4. API layer (routes/controllers) exposing scan results.
-5. Frontend treemap + ranked list + file detail views.
-6. LLM explanation layer — last, and only for top-N flagged files.
-7. Report export.
+4. **Auth module** (`services/github/oauth.service.ts`, `middleware/auth.middleware.ts`)
+   — GitHub OAuth login, optional-auth middleware (see Hard Constraints below).
+   This underpins the next step; build/verify it before or alongside the API
+   layer, not as an afterthought bolted onto existing routes.
+5. API layer (routes/controllers) exposing scan results.
+6. Frontend treemap + ranked list + file detail views.
+7. LLM explanation layer — last, and only for top-N flagged files.
+8. Report export.
 
 ## Hard constraints (from PRD — do not silently violate)
 
@@ -42,19 +46,34 @@ for the top-N riskiest files only.
 - Risk scores are **repo-relative** (min-max normalized within the scanned
   repo), not benchmarked against some absolute/global scale. Don't invent
   cross-repo comparisons.
+- **Auth is optional, not mandatory, at the middleware layer.** Public repos
+  can be scanned with no login. `auth.middleware.ts` attaches `req.user` when
+  a valid session/token is present but must never 401 by default — individual
+  routes/services enforce required-auth where it's actually needed:
+  - Cloning a **private** repo requires a logged-in user with a stored GitHub
+    access token. Reject otherwise.
+  - **LLM explanations are never generated for anonymous scans**, regardless
+    of any flag passed in a request body. This check belongs in the service
+    function itself (`services/llm/explanation.service.ts`), not just the
+    route, so it can't be bypassed by another caller.
+  - Anonymous scans must be rate-limited by IP (Redis, not Postgres — DB
+    fields like `Scan.isAnonymous`/`requesterIp` are for audit, not the
+    hot-path check) and capped at a smaller repo size than logged-in scans.
+  - Never assume `req.user` exists in a route/controller — check for it
+    explicitly wherever it's read.
 
 ## Tech stack (see PRD §9 for full rationale)
 
-| Layer           | Choice                                                                |
-| --------------- | --------------------------------------------------------------------- |
-| Frontend        | React + TypeScript + Vite + Tailwind, `@nivo/treemap` for the heatmap |
-| Backend         | Node.js + Express + TypeScript                                        |
-| Git ops         | `simple-git` (shell out to system `git` for log/blame data)           |
-| Static analysis | `ts-morph` for AST walking, complexity via `escomplex`-style walker   |
-| Queue           | BullMQ + Redis (analysis jobs are slow, always async)                 |
-| DB              | PostgreSQL via Prisma                                                 |
-| LLM             | Gemini API (`@google/genai`), small scoped prompts only               |
-| Auth            | GitHub OAuth                                                          |
+| Layer | Choice |
+|---|---|
+| Frontend | React + TypeScript + Vite + Tailwind, `@nivo/treemap` for the heatmap |
+| Backend | Node.js + Express + TypeScript |
+| Git ops | `simple-git` (shell out to system `git` for log/blame data) |
+| Static analysis | `ts-morph` for AST walking, complexity via `escomplex`-style walker |
+| Queue | BullMQ + Redis (analysis jobs are slow, always async) |
+| DB | PostgreSQL via Prisma |
+| LLM | Gemini API (`@google/genai`), small scoped prompts only |
+| Auth | GitHub OAuth — required for private repos & LLM explanations, optional for public-repo scans |
 
 ## Conventions
 
