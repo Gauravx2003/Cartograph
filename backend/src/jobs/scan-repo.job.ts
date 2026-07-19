@@ -103,6 +103,18 @@ export async function processScanJob(job: Job<ScanJobData>) {
         }))
       });
     }
+    
+    console.log("Explanation requested is: ", scan.explanationsRequested);
+    
+    if (!scan.isAnonymous && scan.explanationsRequested) {
+      await prisma.scan.update({
+        where: { id: scanId },
+        data: { status: 'GENERATING_EXPLANATIONS' }
+      });
+      
+      const { generateExplanationsForScan } = await import('../services/llm/explanation.service.js');
+      await generateExplanationsForScan(scanId, localPath);
+    }
 
     await prisma.scan.update({
       where: { id: scanId },

@@ -3,6 +3,7 @@ import request from 'supertest';
 import app from '../../src/app.js';
 import { prisma } from '../../src/db/client.js';
 import { redisConnection } from '../../src/jobs/queue.js';
+import jwt from 'jsonwebtoken';
 
 describe('Anonymous Scanning & Auth', () => {
   let publicRepoId: string;
@@ -23,7 +24,8 @@ describe('Anonymous Scanning & Auth', () => {
         accessTokenEnc: 'test-token',
       }
     });
-    userToken = user.accessTokenEnc;
+    const secret = process.env.JWT_SECRET || 'your_jwt_secret_here';
+    userToken = jwt.sign({ userId: user.id }, secret);
 
     const publicRepo = await prisma.repo.create({
       data: {
@@ -67,6 +69,18 @@ describe('Anonymous Scanning & Auth', () => {
     const scan = await prisma.scan.findUnique({ where: { id: res.body.scanId } });
     expect(scan?.isAnonymous).toBe(true);
     expect(scan?.requestedById).toBeNull();
+  });
+
+  it('forces explanationsRequested to false for anonymous scans', async () => {
+    const res = await request(app)
+      .post(`/api/repos/${publicRepoId}/scans`)
+      .send({ explanationsRequested: true });
+    
+    expect(res.status).toBe(202);
+    
+    const scan = await prisma.scan.findUnique({ where: { id: res.body.scanId } });
+    expect(scan?.isAnonymous).toBe(true);
+    expect(scan?.explanationsRequested).toBe(false);
   });
 
   it('rejects anonymous scan of a private repo with 401', async () => {

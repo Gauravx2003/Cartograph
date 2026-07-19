@@ -26,6 +26,9 @@ export function computeRiskScores(inputs: FileRiskInput[]): FileRiskScore[] {
   const maxComplexity = Math.max(...inputs.map(i => i.cyclomaticComplexity));
   const minComplexity = Math.min(...inputs.map(i => i.cyclomaticComplexity));
 
+  const maxTopContributorPct = Math.max(...inputs.map(i => i.topContributorPct));
+  const minTopContributorPct = Math.min(...inputs.map(i => i.topContributorPct));
+
   return inputs.map(input => {
     const normalizedChurn = maxChurn === minChurn 
       ? 0 
@@ -35,10 +38,9 @@ export function computeRiskScores(inputs: FileRiskInput[]): FileRiskScore[] {
       ? 0 
       : (input.cyclomaticComplexity - minComplexity) / (maxComplexity - minComplexity);
 
-    let busFactorPenalty = 0;
-    if (input.topContributorPct > SCORING_CONFIG.BUS_FACTOR_THRESHOLD) {
-      busFactorPenalty = (input.topContributorPct - SCORING_CONFIG.BUS_FACTOR_THRESHOLD) / (1 - SCORING_CONFIG.BUS_FACTOR_THRESHOLD);
-    }
+    const busFactorPenalty = maxTopContributorPct === minTopContributorPct
+      ? 0
+      : (input.topContributorPct - minTopContributorPct) / (maxTopContributorPct - minTopContributorPct);
 
     const riskScore = 
       (normalizedChurn * SCORING_CONFIG.WEIGHTS.CHURN) +

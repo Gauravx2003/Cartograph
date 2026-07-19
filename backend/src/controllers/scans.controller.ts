@@ -25,7 +25,7 @@ export const createScan = async (req: Request, res: Response, next: NextFunction
         isAnonymous: !req.user,
         requestedById: req.user?.id || null,
         requesterIp: req.ip || null,
-        explanationsRequested: req.body?.explanationsRequested || false
+        explanationsRequested: !req.user ? false : (req.body?.explanationsRequested || false)
       }
     });
     
@@ -41,11 +41,24 @@ export const createScan = async (req: Request, res: Response, next: NextFunction
 export const getScan = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params;
-    const scan = await prisma.scan.findUnique({ where: { id: id as string } });
+    const scan = await prisma.scan.findUnique({ 
+      where: { id: id as string },
+      include: { repo: true }
+    });
+    
     if (!scan) {
       res.status(404).json({ error: 'Scan not found' });
       return;
     }
+
+    // Secure private repos: only the requester can view the scan
+    if (scan.repo.isPrivate) {
+      if (!req.user || req.user.id !== scan.requestedById) {
+        res.status(401).json({ error: 'Unauthorized: You do not have permission to view this scan.' });
+        return;
+      }
+    }
+
     res.json(scan);
   } catch (error) {
     next(error);
