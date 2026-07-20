@@ -17,7 +17,7 @@ export const Home = () => {
   const [scanId, setScanId] = useState<string | null>(null);
   const { startScan, loading: scanning } = useRepoScan();
 
-  console.log("selected repo: ", selectedRepo);
+  console.log("User is: ", user);
 
   if (loading) {
     return (
