@@ -9,7 +9,6 @@ import { RepoConfirmation } from "../components/RepoConfirmation";
 import type { RepoDetails } from "../components/RepoConfirmation";
 import { ScanInProgress } from "../components/ScanInProgress";
 import { useRepoScan } from "../hooks/useRepoScan";
-import baseUrl from "../lib/api-client";
 
 export const Home = () => {
   const { user, loading } = useAuth();
@@ -107,7 +106,7 @@ export const Home = () => {
 
             {!user && (
               <a
-                href={`${baseUrl}/api/auth/github`}
+                href="https://cartograph-jg01.onrender.com/api/auth/github"
                 className="mt-2 flex items-center justify-center gap-2 text-link hover:text-ink font-sans font-medium text-sm transition-colors"
               >
                 {/* Added optional width and height to ensure the SVG scales nicely with the text */}
