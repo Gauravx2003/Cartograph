@@ -9,6 +9,7 @@ import { RepoConfirmation } from "../components/RepoConfirmation";
 import type { RepoDetails } from "../components/RepoConfirmation";
 import { ScanInProgress } from "../components/ScanInProgress";
 import { useRepoScan } from "../hooks/useRepoScan";
+import baseUrl from "../lib/api-client";
 
 export const Home = () => {
   const { user, loading } = useAuth();
@@ -31,7 +32,10 @@ export const Home = () => {
     setSelectedRepo(repo);
   };
 
-  const handleScan = async (details: RepoDetails, explanationsRequested: boolean) => {
+  const handleScan = async (
+    details: RepoDetails,
+    explanationsRequested: boolean,
+  ) => {
     const newScanId = await startScan(details, explanationsRequested);
     if (newScanId) {
       setScanId(newScanId);
@@ -77,7 +81,9 @@ export const Home = () => {
               onScan={handleScan}
             />
             {scanning && (
-              <div className="mt-4 text-sm text-mute animate-pulse">Starting scan...</div>
+              <div className="mt-4 text-sm text-mute animate-pulse">
+                Starting scan...
+              </div>
             )}
           </>
         ) : (
@@ -101,7 +107,7 @@ export const Home = () => {
 
             {!user && (
               <a
-                href="http://localhost:4000/api/auth/github"
+                href={`${baseUrl}/api/auth/github`}
                 className="mt-2 flex items-center justify-center gap-2 text-link hover:text-ink font-sans font-medium text-sm transition-colors"
               >
                 {/* Added optional width and height to ensure the SVG scales nicely with the text */}
