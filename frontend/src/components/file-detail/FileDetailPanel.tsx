@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { useScanStore } from "../../store/scan-store";
 import { useFileDependencies } from "../../store/scan-selectors";
 import { BlastRadiusDiagram } from "./BlastRadiusDiagram";

@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
-import { useScanStore } from '../../store/scan-store';
+import React, { useMemo } from "react";
+import { useScanStore } from "../../store/scan-store";
 
 interface BlastRadiusDiagramProps {
   selectedFilePath: string;
@@ -14,7 +14,9 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
   importedBy,
   fileRiskScore,
 }) => {
-  const setSelectedFilePath = useScanStore((state) => state.setSelectedFilePath);
+  const setSelectedFilePath = useScanStore(
+    (state) => state.setSelectedFilePath,
+  );
   const fileScores = useScanStore((state) => state.fileScores);
 
   const getScore = (path: string) => {
@@ -22,9 +24,10 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
   };
 
   const getRiskDetails = (score: number) => {
-    if (score >= 0.7) return { label: 'High', class: 'bg-risk-high text-canvas' };
-    if (score >= 0.3) return { label: 'Med', class: 'bg-risk-mid text-canvas' };
-    return { label: 'Low', class: 'bg-risk-low text-canvas' };
+    if (score >= 0.7)
+      return { label: "High", class: "bg-risk-high text-canvas" };
+    if (score >= 0.3) return { label: "Med", class: "bg-risk-mid text-canvas" };
+    return { label: "Low", class: "bg-risk-low text-canvas" };
   };
 
   const centerDetails = getRiskDetails(fileRiskScore);
@@ -44,39 +47,41 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
 
   const truncateFilename = (filename: string) => {
     const maxChars = 16;
-    return filename.length > maxChars ? filename.substring(0, maxChars - 1) + '…' : filename;
+    return filename.length > maxChars
+      ? filename.substring(0, maxChars - 1) + "…"
+      : filename;
   };
 
-  const computeLayout = (nodes: string[], isDependents: boolean) => {
+  const computeLayout = (nodes: string[]) => {
     let renderCount = Math.min(8, nodes.length);
     let computedRadius = 140;
     const spanDeg = 150;
     const spanRad = (spanDeg * Math.PI) / 180;
-    
+
     while (renderCount > 1) {
       const angleStepRad = spanRad / (renderCount - 1);
-      const minRequiredRadius = 136 / (2 * Math.sin(angleStepRad / 2)); 
+      const minRequiredRadius = 136 / (2 * Math.sin(angleStepRad / 2));
       if (minRequiredRadius <= 220) {
         computedRadius = Math.max(140, minRequiredRadius);
         break;
       }
       renderCount--;
     }
-    
+
     if (renderCount === 1) {
       computedRadius = 140;
     }
-    
+
     return { renderCount, computedRadius, spanDeg };
   };
 
-  const dependentsLayout = computeLayout(dependents, true);
-  const dependenciesLayout = computeLayout(dependencies, false);
+  const dependentsLayout = computeLayout(dependents);
+  const dependenciesLayout = computeLayout(dependencies);
 
   const renderNodes = (
     allNodes: string[],
     isDependents: boolean,
-    layout: { renderCount: number, computedRadius: number, spanDeg: number }
+    layout: { renderCount: number; computedRadius: number; spanDeg: number },
   ) => {
     const { renderCount, computedRadius, spanDeg } = layout;
     const nodesToRender = allNodes.slice(0, renderCount);
@@ -96,8 +101,8 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
       const angleRad = (angleDeg * Math.PI) / 180;
       const x = cx + computedRadius * Math.cos(angleRad);
       const y = cy + computedRadius * Math.sin(angleRad);
-      
-      const parts = path.split('/');
+
+      const parts = path.split("/");
       const filename = parts[parts.length - 1];
       const truncatedFilename = truncateFilename(filename);
 
@@ -134,7 +139,13 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
             />
           )}
 
-          <foreignObject x={x - 60} y={y - 12} width={120} height={24} className="overflow-visible">
+          <foreignObject
+            x={x - 60}
+            y={y - 12}
+            width={120}
+            height={24}
+            className="overflow-visible"
+          >
             <div className="flex items-center justify-center w-full h-full">
               <button
                 onClick={() => setSelectedFilePath(path)}
@@ -153,7 +164,11 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
   return (
     <div className="flex flex-col items-center bg-surface border border-hairline rounded-lg p-4 w-full">
       <div className="relative w-full flex items-center justify-center">
-        <svg width={width} height={height} className="overflow-visible max-w-full h-auto">
+        <svg
+          width={width}
+          height={height}
+          className="overflow-visible max-w-full h-auto"
+        >
           <defs>
             <marker
               id="arrowhead-solid"
@@ -180,8 +195,26 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
           {/* Shockwaves for dependents */}
           {dependentsLayout.renderCount > 0 && (
             <g>
-              <circle cx={cx} cy={cy} r={dependentsLayout.computedRadius * 0.4} fill="none" stroke="var(--color-hairline-strong)" strokeWidth="1" strokeDasharray="4 4" className="opacity-50" />
-              <circle cx={cx} cy={cy} r={dependentsLayout.computedRadius * 0.7} fill="none" stroke="var(--color-hairline-strong)" strokeWidth="1" strokeDasharray="6 6" className="opacity-30" />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={dependentsLayout.computedRadius * 0.4}
+                fill="none"
+                stroke="var(--color-hairline-strong)"
+                strokeWidth="1"
+                strokeDasharray="4 4"
+                className="opacity-50"
+              />
+              <circle
+                cx={cx}
+                cy={cy}
+                r={dependentsLayout.computedRadius * 0.7}
+                fill="none"
+                stroke="var(--color-hairline-strong)"
+                strokeWidth="1"
+                strokeDasharray="6 6"
+                className="opacity-30"
+              />
             </g>
           )}
 
@@ -191,9 +224,16 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
           {/* Center Node */}
           <foreignObject x={cx - 30} y={cy - 30} width={60} height={60}>
             <div className="flex items-center justify-center w-full h-full">
-              <div className={`w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-sm font-bold ${centerDetails.class}`} title={selectedFilePath}>
-                <span className="text-[10px] leading-tight opacity-90 uppercase tracking-wider">{centerDetails.label}</span>
-                <span className="text-sm leading-tight">{(fileRiskScore * 10).toFixed(1)}</span>
+              <div
+                className={`w-14 h-14 rounded-full flex flex-col items-center justify-center shadow-sm font-bold ${centerDetails.class}`}
+                title={selectedFilePath}
+              >
+                <span className="text-[10px] leading-tight opacity-90 uppercase tracking-wider">
+                  {centerDetails.label}
+                </span>
+                <span className="text-sm leading-tight">
+                  {(fileRiskScore * 10).toFixed(1)}
+                </span>
               </div>
             </div>
           </foreignObject>
@@ -211,21 +251,21 @@ export const BlastRadiusDiagram: React.FC<BlastRadiusDiagramProps> = ({
           </div>
         )}
       </div>
-      
+
       {/* Legend below the diagram */}
       <div className="mt-4 text-xs flex justify-center items-center gap-6 text-mute border-t border-hairline pt-4 w-full">
-         <div className="flex items-center gap-2">
-           <div className="w-4 h-4 rounded-sm border border-hairline bg-surface-card flex items-center justify-center">
-             <div className="w-2 h-0.5 bg-ink" />
-           </div>
-           <span>Imported by — blast radius</span>
-         </div>
-         <div className="flex items-center gap-2">
-           <div className="w-4 h-4 rounded-sm border border-hairline bg-surface-card flex items-center justify-center">
-             <div className="w-2 h-0.5 border-t border-dashed border-mute" />
-           </div>
-           <span>Imports — foundation</span>
-         </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-sm border border-hairline bg-surface-card flex items-center justify-center">
+            <div className="w-2 h-0.5 bg-ink" />
+          </div>
+          <span>Imported by — blast radius</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded-sm border border-hairline bg-surface-card flex items-center justify-center">
+            <div className="w-2 h-0.5 border-t border-dashed border-mute" />
+          </div>
+          <span>Imports — foundation</span>
+        </div>
       </div>
     </div>
   );
