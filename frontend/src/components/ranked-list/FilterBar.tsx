@@ -1,4 +1,3 @@
-import React from "react";
 import { useScanStore } from "../../store/scan-store";
 
 export const FilterBar = () => {

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: 'http://localhost:4000/api',
+  baseURL: 'https://cartograph-jg01.onrender.com/api',
   withCredentials: true,
 });

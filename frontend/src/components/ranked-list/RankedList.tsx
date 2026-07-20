@@ -1,7 +1,6 @@
-import React from 'react';
-import { useVisibleFileScores } from '../../store/scan-selectors';
-import { FilterBar } from './FilterBar';
-import { RankedTable } from './RankedTable';
+import { useVisibleFileScores } from "../../store/scan-selectors";
+import { FilterBar } from "./FilterBar";
+import { RankedTable } from "./RankedTable";
 
 export const RankedList = () => {
   const visibleData = useVisibleFileScores();

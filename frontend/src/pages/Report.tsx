@@ -13,9 +13,9 @@ export const Report = () => {
   const setFileScores = useScanStore((state) => state.setFileScores);
   const setScanMeta = useScanStore((state) => state.setScanMeta);
   const selectedFilePath = useScanStore((state) => state.selectedFilePath);
-  const setSelectedFilePath = useScanStore(
-    (state) => state.setSelectedFilePath,
-  );
+  // const setSelectedFilePath = useScanStore(
+  //   (state) => state.setSelectedFilePath,
+  // );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -65,17 +65,19 @@ export const Report = () => {
         .then(([metaRes, filesRes]) => {
           if (isMounted) {
             setScanMeta(metaRes.data);
-            
+
             // Handle both new API format (object) and old format (array fallback just in case)
             if (filesRes.data.fileScores) {
               setFileScores(filesRes.data.fileScores);
               if (filesRes.data.dependencies) {
-                useScanStore.getState().setDependencies(filesRes.data.dependencies);
+                useScanStore
+                  .getState()
+                  .setDependencies(filesRes.data.dependencies);
               }
             } else {
               setFileScores(filesRes.data);
             }
-            
+
             setLoading(false);
           }
         })
@@ -146,13 +148,13 @@ export const Report = () => {
     }
   };
 
-  const handlePrintPdf = () => {
-    const baseUrl = apiClient.defaults.baseURL || "http://localhost:4000/api";
-    const pdfUrl = slug
-      ? `${baseUrl}/reports/shared/${slug}/pdf`
-      : `${baseUrl}/reports/${scanId}/pdf`;
-    window.open(pdfUrl, "_blank");
-  };
+  // const handlePrintPdf = () => {
+  //   const baseUrl = apiClient.defaults.baseURL || "http://localhost:4000/api";
+  //   const pdfUrl = slug
+  //     ? `${baseUrl}/reports/shared/${slug}/pdf`
+  //     : `${baseUrl}/reports/${scanId}/pdf`;
+  //   window.open(pdfUrl, "_blank");
+  // };
 
   return (
     <div className="h-screen w-screen p-6 flex flex-col bg-canvas text-ink overflow-hidden">
