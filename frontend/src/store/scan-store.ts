@@ -1,10 +1,21 @@
 import { create } from 'zustand';
 
+export interface FileScoreContributor {
+  id: string;
+  fileScoreId: string;
+  name: string;
+  email: string;
+  commitCount: number;
+  percentage: number;
+}
+
 export interface FileScore {
   id: string;
   scanId: string;
   filePath: string;
   churnCount: number;
+  churnHistory?: { date: string; commits: number }[];
+  contributors?: FileScoreContributor[];
   complexityCyclomatic: number;
   complexityMaxNesting: number;
   fileLengthLines: number;
@@ -16,6 +27,11 @@ export interface FileScore {
   riskScore: number;
   explanation?: string;
   createdAt: string;
+}
+
+export interface FileDependency {
+  fromPath: string;
+  toPath: string;
 }
 
 export interface ActiveFilters {
@@ -33,6 +49,7 @@ export interface ScanMeta {
 
 interface ScanStoreState {
   fileScores: FileScore[];
+  dependencies: FileDependency[];
   selectedFilePath: string | null;
   hoveredFilePath: string | null;
   searchQuery: string;
@@ -41,6 +58,7 @@ interface ScanStoreState {
   
   // Actions
   setFileScores: (scores: FileScore[]) => void;
+  setDependencies: (deps: FileDependency[]) => void;
   setSelectedFilePath: (path: string | null) => void;
   setHoveredFilePath: (path: string | null) => void;
   setSearchQuery: (query: string) => void;
@@ -51,6 +69,7 @@ interface ScanStoreState {
 
 const initialState = {
   fileScores: [],
+  dependencies: [],
   selectedFilePath: null,
   hoveredFilePath: null,
   searchQuery: '',
@@ -62,6 +81,7 @@ export const useScanStore = create<ScanStoreState>()((set) => ({
   ...initialState,
 
   setFileScores: (scores) => set({ fileScores: scores }),
+  setDependencies: (deps) => set({ dependencies: deps }),
   setSelectedFilePath: (path) => set({ selectedFilePath: path }),
   setHoveredFilePath: (path) => set({ hoveredFilePath: path }),
   setSearchQuery: (query) => set({ searchQuery: query }),

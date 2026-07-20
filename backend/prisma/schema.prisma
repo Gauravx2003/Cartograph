@@ -4,7 +4,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma" 
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -24,17 +24,17 @@ model Repository {
 // Auth / Users
 // ---------------------------------------------------------------------------
 model User {
-  id               String   @id @default(cuid())
-  githubId         String   @unique
-  username         String
-  avatarUrl        String?
+  id             String   @id @default(cuid())
+  githubId       String   @unique
+  username       String
+  avatarUrl      String?
   // Store encrypted at the application layer — never plaintext.
-  accessTokenEnc   String
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  accessTokenEnc String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
-  repos            Repo[]
-  scansRequested   Scan[]
+  repos          Repo[]
+  scansRequested Scan[]
 
   @@map("users")
 }
@@ -44,19 +44,19 @@ model User {
 // ---------------------------------------------------------------------------
 
 model Repo {
-  id              String   @id @default(cuid())
-  githubRepoId    String   @unique
-  owner           String
-  name            String
-  fullName        String   // "owner/name"
-  defaultBranch   String
-  isPrivate       Boolean  @default(false)
-  connectedById   String?
-  connectedBy     User?    @relation(fields: [connectedById], references: [id])
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id            String   @id @default(cuid())
+  githubRepoId  String   @unique
+  owner         String
+  name          String
+  fullName      String // "owner/name"
+  defaultBranch String
+  isPrivate     Boolean  @default(false)
+  connectedById String?
+  connectedBy   User?    @relation(fields: [connectedById], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  scans           Scan[]
+  scans Scan[]
 
   @@index([connectedById])
   @@map("repos")
@@ -77,33 +77,34 @@ enum ScanStatus {
 }
 
 model Scan {
-  id                String     @id @default(cuid())
-  repoId            String
-  repo              Repo       @relation(fields: [repoId], references: [id])
-  status            ScanStatus @default(QUEUED)
-  commitSha         String?    // HEAD sha at time of scan, set once cloning completes
-  isAnonymous       Boolean    @default(false)
-  requestedById     String?
-  requestedBy       User?      @relation(fields: [requestedById], references: [id])
-  requesterIp       String?
-  explanationsRequested Boolean @default(false)
-  churnWindowMonths Int        @default(6)
-  fileCount         Int?
-  errorMessage      String?
-  startedAt         DateTime?
-  completedAt       DateTime?
-  createdAt         DateTime   @default(now())
+  id                    String     @id @default(cuid())
+  repoId                String
+  repo                  Repo       @relation(fields: [repoId], references: [id])
+  status                ScanStatus @default(QUEUED)
+  commitSha             String? // HEAD sha at time of scan, set once cloning completes
+  isAnonymous           Boolean    @default(false)
+  requestedById         String?
+  requestedBy           User?      @relation(fields: [requestedById], references: [id])
+  requesterIp           String?
+  explanationsRequested Boolean    @default(false)
+  churnWindowMonths     Int        @default(6)
+  fileCount             Int?
+  errorMessage          String?
+  startedAt             DateTime?
+  completedAt           DateTime?
+  createdAt             DateTime   @default(now())
 
   // Self-relation pointing at the prior scan for the same repo, if any.
   // Not used for any trend UI in v1 (out of scope per PRD §8) — just keeps
   // scans chainable so trend/diff features can be added later without a
   // migration.
-  previousScanId    String?
-  previousScan      Scan?      @relation("ScanHistory", fields: [previousScanId], references: [id])
-  nextScans         Scan[]     @relation("ScanHistory")
+  previousScanId String?
+  previousScan   Scan?   @relation("ScanHistory", fields: [previousScanId], references: [id])
+  nextScans      Scan[]  @relation("ScanHistory")
 
-  fileScores        FileScore[]
-  reports           Report[]
+  fileScores   FileScore[]
+  reports      Report[]
+  dependencies FileDependency[]
 
   @@index([repoId, createdAt])
   @@map("scans")
@@ -114,36 +115,39 @@ model Scan {
 // ---------------------------------------------------------------------------
 
 model FileScore {
-  id                    String   @id @default(cuid())
-  scanId                String
-  scan                  Scan     @relation(fields: [scanId], references: [id])
-  filePath              String
+  id       String @id @default(cuid())
+  scanId   String
+  scan     Scan   @relation(fields: [scanId], references: [id])
+  filePath String
 
   // Raw signals (from churn/complexity/ownership services — PRD §7.2)
-  churnCount            Int
-  complexityCyclomatic  Int
-  complexityMaxNesting  Int
-  fileLengthLines       Int
-  uniqueContributors    Int
-  topContributorPct     Float
+  churnCount           Int
+  complexityCyclomatic Int
+  complexityMaxNesting Int
+  fileLengthLines      Int
+  uniqueContributors   Int
+  topContributorPct    Float
 
   // Normalized / derived values feeding the risk formula (PRD §10)
-  normalizedChurn       Float
-  normalizedComplexity  Float
-  busFactorPenalty      Float
+  normalizedChurn      Float
+  normalizedComplexity Float
+  busFactorPenalty     Float
 
   // Final combined score, repo-relative (0-1)
-  riskScore             Float
+  riskScore Float
 
   // LLM output — only populated for top-N flagged files (PRD §7.4)
-  explanation           String?
+  explanation String?
 
-  createdAt             DateTime @default(now())
+  // Weekly commit counts over the churn window (PRD §7.3)
+  churnHistory Json?
 
-  contributors          FileContributor[]
+  createdAt DateTime @default(now())
 
-  @@index([scanId, riskScore])
+  contributors FileContributor[]
+
   @@unique([scanId, filePath])
+  @@index([scanId, riskScore])
   @@map("file_scores")
 }
 
@@ -153,13 +157,13 @@ model FileScore {
 // ---------------------------------------------------------------------------
 
 model FileContributor {
-  id              String    @id @default(cuid())
-  fileScoreId     String
-  fileScore       FileScore @relation(fields: [fileScoreId], references: [id])
-  name            String
-  email           String
-  commitCount     Int
-  percentage      Float
+  id          String    @id @default(cuid())
+  fileScoreId String
+  fileScore   FileScore @relation(fields: [fileScoreId], references: [id])
+  name        String
+  email       String
+  commitCount Int
+  percentage  Float
 
   @@index([fileScoreId])
   @@map("file_contributors")
@@ -175,13 +179,30 @@ enum ReportFormat {
 }
 
 model Report {
-  id         String       @id @default(cuid())
-  scanId     String
-  scan       Scan         @relation(fields: [scanId], references: [id])
-  format     ReportFormat
-  url        String?      // storage URL for PDF, or shareable link slug
-  createdAt  DateTime     @default(now())
+  id        String       @id @default(cuid())
+  scanId    String
+  scan      Scan         @relation(fields: [scanId], references: [id])
+  format    ReportFormat
+  url       String? // storage URL for PDF, or shareable link slug
+  createdAt DateTime     @default(now())
 
   @@index([scanId])
   @@map("reports")
+}
+
+// ---------------------------------------------------------------------------
+// File Dependencies — tracks imports between files for a given scan
+// ---------------------------------------------------------------------------
+
+model FileDependency {
+  id        String   @id @default(cuid())
+  scanId    String
+  scan      Scan     @relation(fields: [scanId], references: [id])
+  fromPath  String // the file making the import
+  toPath    String // the file being imported
+  createdAt DateTime @default(now())
+
+  @@index([scanId, fromPath])
+  @@index([scanId, toPath])
+  @@map("file_dependencies")
 }

@@ -3,17 +3,30 @@ import { SCORING_CONFIG } from '../../config/scoring.js';
 export interface FileRiskInput {
   filePath: string;
   churnCount: number;
+  churnHistory?: { date: string; commits: number }[];
   cyclomaticComplexity: number;
   maxNestingDepth: number;
   fileLengthLines: number;
   uniqueContributors: number;
   topContributorPct: number;
+  contributors: {
+    authorName: string;
+    authorEmail: string;
+    commits: number;
+    contributionPct: number;
+  }[];
 }
 
 export interface FileRiskScore extends FileRiskInput {
   normalizedChurn: number;
   normalizedComplexity: number;
   busFactorPenalty: number;
+  contributors: {
+    authorName: string;
+    authorEmail: string;
+    commits: number;
+    contributionPct: number;
+  }[];
   riskScore: number;
 }
 
@@ -52,7 +65,8 @@ export function computeRiskScores(inputs: FileRiskInput[]): FileRiskScore[] {
       normalizedChurn,
       normalizedComplexity,
       busFactorPenalty,
-      riskScore
+      riskScore,
+      contributors: input.contributors
     };
   });
 }

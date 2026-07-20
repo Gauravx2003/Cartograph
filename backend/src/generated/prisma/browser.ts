@@ -52,3 +52,8 @@ export type FileContributor = Prisma.FileContributorModel
  * 
  */
 export type Report = Prisma.ReportModel
+/**
+ * Model FileDependency
+ * 
+ */
+export type FileDependency = Prisma.FileDependencyModel

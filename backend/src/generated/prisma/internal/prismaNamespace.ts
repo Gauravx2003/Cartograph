@@ -390,7 +390,8 @@ export const ModelName = {
   Scan: 'Scan',
   FileScore: 'FileScore',
   FileContributor: 'FileContributor',
-  Report: 'Report'
+  Report: 'Report',
+  FileDependency: 'FileDependency'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -406,7 +407,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "repository" | "user" | "repo" | "scan" | "fileScore" | "fileContributor" | "report"
+    modelProps: "repository" | "user" | "repo" | "scan" | "fileScore" | "fileContributor" | "report" | "fileDependency"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -928,6 +929,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    FileDependency: {
+      payload: Prisma.$FileDependencyPayload<ExtArgs>
+      fields: Prisma.FileDependencyFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.FileDependencyFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.FileDependencyFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        findFirst: {
+          args: Prisma.FileDependencyFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.FileDependencyFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        findMany: {
+          args: Prisma.FileDependencyFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>[]
+        }
+        create: {
+          args: Prisma.FileDependencyCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        createMany: {
+          args: Prisma.FileDependencyCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.FileDependencyCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>[]
+        }
+        delete: {
+          args: Prisma.FileDependencyDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        update: {
+          args: Prisma.FileDependencyUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        deleteMany: {
+          args: Prisma.FileDependencyDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.FileDependencyUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.FileDependencyUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>[]
+        }
+        upsert: {
+          args: Prisma.FileDependencyUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$FileDependencyPayload>
+        }
+        aggregate: {
+          args: Prisma.FileDependencyAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateFileDependency>
+        }
+        groupBy: {
+          args: Prisma.FileDependencyGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileDependencyGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.FileDependencyCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.FileDependencyCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1042,6 +1117,7 @@ export const FileScoreScalarFieldEnum = {
   busFactorPenalty: 'busFactorPenalty',
   riskScore: 'riskScore',
   explanation: 'explanation',
+  churnHistory: 'churnHistory',
   createdAt: 'createdAt'
 } as const
 
@@ -1071,12 +1147,31 @@ export const ReportScalarFieldEnum = {
 export type ReportScalarFieldEnum = (typeof ReportScalarFieldEnum)[keyof typeof ReportScalarFieldEnum]
 
 
+export const FileDependencyScalarFieldEnum = {
+  id: 'id',
+  scanId: 'scanId',
+  fromPath: 'fromPath',
+  toPath: 'toPath',
+  createdAt: 'createdAt'
+} as const
+
+export type FileDependencyScalarFieldEnum = (typeof FileDependencyScalarFieldEnum)[keyof typeof FileDependencyScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullableJsonNullValueInput = {
+  DbNull: DbNull,
+  JsonNull: JsonNull
+} as const
+
+export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
 export const QueryMode = {
@@ -1093,6 +1188,15 @@ export const NullsOrder = {
 } as const
 
 export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
+
+
+export const JsonNullValueFilter = {
+  DbNull: DbNull,
+  JsonNull: JsonNull,
+  AnyNull: AnyNull
+} as const
+
+export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
 
 
 
@@ -1175,6 +1279,20 @@ export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, '
  * Reference to a field of type 'Float[]'
  */
 export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Json'
+ */
+export type JsonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Json'>
+    
+
+
+/**
+ * Reference to a field of type 'QueryMode'
+ */
+export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
     
 
 
@@ -1308,6 +1426,7 @@ export type GlobalOmitConfig = {
   fileScore?: Prisma.FileScoreOmit
   fileContributor?: Prisma.FileContributorOmit
   report?: Prisma.ReportOmit
+  fileDependency?: Prisma.FileDependencyOmit
 }
 
 /* Types for Logging */

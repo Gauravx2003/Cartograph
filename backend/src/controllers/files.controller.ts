@@ -24,9 +24,15 @@ export const getFiles = async (req: Request, res: Response, next: NextFunction) 
 
     const files = await prisma.fileScore.findMany({
       where: { scanId: scanId as string },
-      orderBy: { riskScore: 'desc' }
+      orderBy: { riskScore: 'desc' },
+      include: { contributors: true }
     });
-    res.json(files);
+
+    const dependencies = await prisma.fileDependency.findMany({
+      where: { scanId: scanId as string },
+      select: { fromPath: true, toPath: true }
+    });
+    res.json({ fileScores: files, dependencies });
   } catch (error) {
     next(error);
   }

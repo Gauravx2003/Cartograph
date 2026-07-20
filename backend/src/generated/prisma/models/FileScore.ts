@@ -103,6 +103,7 @@ export type FileScoreCountAggregateOutputType = {
   busFactorPenalty: number
   riskScore: number
   explanation: number
+  churnHistory: number
   createdAt: number
   _all: number
 }
@@ -185,6 +186,7 @@ export type FileScoreCountAggregateInputType = {
   busFactorPenalty?: true
   riskScore?: true
   explanation?: true
+  churnHistory?: true
   createdAt?: true
   _all?: true
 }
@@ -290,6 +292,7 @@ export type FileScoreGroupByOutputType = {
   busFactorPenalty: number
   riskScore: number
   explanation: string | null
+  churnHistory: runtime.JsonValue | null
   createdAt: Date
   _count: FileScoreCountAggregateOutputType | null
   _avg: FileScoreAvgAggregateOutputType | null
@@ -331,6 +334,7 @@ export type FileScoreWhereInput = {
   busFactorPenalty?: Prisma.FloatFilter<"FileScore"> | number
   riskScore?: Prisma.FloatFilter<"FileScore"> | number
   explanation?: Prisma.StringNullableFilter<"FileScore"> | string | null
+  churnHistory?: Prisma.JsonNullableFilter<"FileScore">
   createdAt?: Prisma.DateTimeFilter<"FileScore"> | Date | string
   scan?: Prisma.XOR<Prisma.ScanScalarRelationFilter, Prisma.ScanWhereInput>
   contributors?: Prisma.FileContributorListRelationFilter
@@ -351,6 +355,7 @@ export type FileScoreOrderByWithRelationInput = {
   busFactorPenalty?: Prisma.SortOrder
   riskScore?: Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  churnHistory?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   scan?: Prisma.ScanOrderByWithRelationInput
   contributors?: Prisma.FileContributorOrderByRelationAggregateInput
@@ -375,6 +380,7 @@ export type FileScoreWhereUniqueInput = Prisma.AtLeast<{
   busFactorPenalty?: Prisma.FloatFilter<"FileScore"> | number
   riskScore?: Prisma.FloatFilter<"FileScore"> | number
   explanation?: Prisma.StringNullableFilter<"FileScore"> | string | null
+  churnHistory?: Prisma.JsonNullableFilter<"FileScore">
   createdAt?: Prisma.DateTimeFilter<"FileScore"> | Date | string
   scan?: Prisma.XOR<Prisma.ScanScalarRelationFilter, Prisma.ScanWhereInput>
   contributors?: Prisma.FileContributorListRelationFilter
@@ -395,6 +401,7 @@ export type FileScoreOrderByWithAggregationInput = {
   busFactorPenalty?: Prisma.SortOrder
   riskScore?: Prisma.SortOrder
   explanation?: Prisma.SortOrderInput | Prisma.SortOrder
+  churnHistory?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.FileScoreCountOrderByAggregateInput
   _avg?: Prisma.FileScoreAvgOrderByAggregateInput
@@ -421,6 +428,7 @@ export type FileScoreScalarWhereWithAggregatesInput = {
   busFactorPenalty?: Prisma.FloatWithAggregatesFilter<"FileScore"> | number
   riskScore?: Prisma.FloatWithAggregatesFilter<"FileScore"> | number
   explanation?: Prisma.StringNullableWithAggregatesFilter<"FileScore"> | string | null
+  churnHistory?: Prisma.JsonNullableWithAggregatesFilter<"FileScore">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"FileScore"> | Date | string
 }
 
@@ -438,6 +446,7 @@ export type FileScoreCreateInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   scan: Prisma.ScanCreateNestedOneWithoutFileScoresInput
   contributors?: Prisma.FileContributorCreateNestedManyWithoutFileScoreInput
@@ -458,6 +467,7 @@ export type FileScoreUncheckedCreateInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   contributors?: Prisma.FileContributorUncheckedCreateNestedManyWithoutFileScoreInput
 }
@@ -476,6 +486,7 @@ export type FileScoreUpdateInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scan?: Prisma.ScanUpdateOneRequiredWithoutFileScoresNestedInput
   contributors?: Prisma.FileContributorUpdateManyWithoutFileScoreNestedInput
@@ -496,6 +507,7 @@ export type FileScoreUncheckedUpdateInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contributors?: Prisma.FileContributorUncheckedUpdateManyWithoutFileScoreNestedInput
 }
@@ -515,6 +527,7 @@ export type FileScoreCreateManyInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -532,6 +545,7 @@ export type FileScoreUpdateManyMutationInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -550,6 +564,7 @@ export type FileScoreUncheckedUpdateManyInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -583,6 +598,7 @@ export type FileScoreCountOrderByAggregateInput = {
   busFactorPenalty?: Prisma.SortOrder
   riskScore?: Prisma.SortOrder
   explanation?: Prisma.SortOrder
+  churnHistory?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -731,6 +747,7 @@ export type FileScoreCreateWithoutScanInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   contributors?: Prisma.FileContributorCreateNestedManyWithoutFileScoreInput
 }
@@ -749,6 +766,7 @@ export type FileScoreUncheckedCreateWithoutScanInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   contributors?: Prisma.FileContributorUncheckedCreateNestedManyWithoutFileScoreInput
 }
@@ -797,6 +815,7 @@ export type FileScoreScalarWhereInput = {
   busFactorPenalty?: Prisma.FloatFilter<"FileScore"> | number
   riskScore?: Prisma.FloatFilter<"FileScore"> | number
   explanation?: Prisma.StringNullableFilter<"FileScore"> | string | null
+  churnHistory?: Prisma.JsonNullableFilter<"FileScore">
   createdAt?: Prisma.DateTimeFilter<"FileScore"> | Date | string
 }
 
@@ -814,6 +833,7 @@ export type FileScoreCreateWithoutContributorsInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   scan: Prisma.ScanCreateNestedOneWithoutFileScoresInput
 }
@@ -833,6 +853,7 @@ export type FileScoreUncheckedCreateWithoutContributorsInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -866,6 +887,7 @@ export type FileScoreUpdateWithoutContributorsInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   scan?: Prisma.ScanUpdateOneRequiredWithoutFileScoresNestedInput
 }
@@ -885,6 +907,7 @@ export type FileScoreUncheckedUpdateWithoutContributorsInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -902,6 +925,7 @@ export type FileScoreCreateManyScanInput = {
   busFactorPenalty: number
   riskScore: number
   explanation?: string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
 }
 
@@ -919,6 +943,7 @@ export type FileScoreUpdateWithoutScanInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contributors?: Prisma.FileContributorUpdateManyWithoutFileScoreNestedInput
 }
@@ -937,6 +962,7 @@ export type FileScoreUncheckedUpdateWithoutScanInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   contributors?: Prisma.FileContributorUncheckedUpdateManyWithoutFileScoreNestedInput
 }
@@ -955,6 +981,7 @@ export type FileScoreUncheckedUpdateManyWithoutScanInput = {
   busFactorPenalty?: Prisma.FloatFieldUpdateOperationsInput | number
   riskScore?: Prisma.FloatFieldUpdateOperationsInput | number
   explanation?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  churnHistory?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -1004,6 +1031,7 @@ export type FileScoreSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   busFactorPenalty?: boolean
   riskScore?: boolean
   explanation?: boolean
+  churnHistory?: boolean
   createdAt?: boolean
   scan?: boolean | Prisma.ScanDefaultArgs<ExtArgs>
   contributors?: boolean | Prisma.FileScore$contributorsArgs<ExtArgs>
@@ -1025,6 +1053,7 @@ export type FileScoreSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   busFactorPenalty?: boolean
   riskScore?: boolean
   explanation?: boolean
+  churnHistory?: boolean
   createdAt?: boolean
   scan?: boolean | Prisma.ScanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["fileScore"]>
@@ -1044,6 +1073,7 @@ export type FileScoreSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   busFactorPenalty?: boolean
   riskScore?: boolean
   explanation?: boolean
+  churnHistory?: boolean
   createdAt?: boolean
   scan?: boolean | Prisma.ScanDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["fileScore"]>
@@ -1063,10 +1093,11 @@ export type FileScoreSelectScalar = {
   busFactorPenalty?: boolean
   riskScore?: boolean
   explanation?: boolean
+  churnHistory?: boolean
   createdAt?: boolean
 }
 
-export type FileScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scanId" | "filePath" | "churnCount" | "complexityCyclomatic" | "complexityMaxNesting" | "fileLengthLines" | "uniqueContributors" | "topContributorPct" | "normalizedChurn" | "normalizedComplexity" | "busFactorPenalty" | "riskScore" | "explanation" | "createdAt", ExtArgs["result"]["fileScore"]>
+export type FileScoreOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "scanId" | "filePath" | "churnCount" | "complexityCyclomatic" | "complexityMaxNesting" | "fileLengthLines" | "uniqueContributors" | "topContributorPct" | "normalizedChurn" | "normalizedComplexity" | "busFactorPenalty" | "riskScore" | "explanation" | "churnHistory" | "createdAt", ExtArgs["result"]["fileScore"]>
 export type FileScoreInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   scan?: boolean | Prisma.ScanDefaultArgs<ExtArgs>
   contributors?: boolean | Prisma.FileScore$contributorsArgs<ExtArgs>
@@ -1100,6 +1131,7 @@ export type $FileScorePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     busFactorPenalty: number
     riskScore: number
     explanation: string | null
+    churnHistory: runtime.JsonValue | null
     createdAt: Date
   }, ExtArgs["result"]["fileScore"]>
   composites: {}
@@ -1540,6 +1572,7 @@ export interface FileScoreFieldRefs {
   readonly busFactorPenalty: Prisma.FieldRef<"FileScore", 'Float'>
   readonly riskScore: Prisma.FieldRef<"FileScore", 'Float'>
   readonly explanation: Prisma.FieldRef<"FileScore", 'String'>
+  readonly churnHistory: Prisma.FieldRef<"FileScore", 'Json'>
   readonly createdAt: Prisma.FieldRef<"FileScore", 'DateTime'>
 }
     

@@ -306,6 +306,7 @@ export type ScanWhereInput = {
   nextScans?: Prisma.ScanListRelationFilter
   fileScores?: Prisma.FileScoreListRelationFilter
   reports?: Prisma.ReportListRelationFilter
+  dependencies?: Prisma.FileDependencyListRelationFilter
 }
 
 export type ScanOrderByWithRelationInput = {
@@ -330,6 +331,7 @@ export type ScanOrderByWithRelationInput = {
   nextScans?: Prisma.ScanOrderByRelationAggregateInput
   fileScores?: Prisma.FileScoreOrderByRelationAggregateInput
   reports?: Prisma.ReportOrderByRelationAggregateInput
+  dependencies?: Prisma.FileDependencyOrderByRelationAggregateInput
 }
 
 export type ScanWhereUniqueInput = Prisma.AtLeast<{
@@ -357,6 +359,7 @@ export type ScanWhereUniqueInput = Prisma.AtLeast<{
   nextScans?: Prisma.ScanListRelationFilter
   fileScores?: Prisma.FileScoreListRelationFilter
   reports?: Prisma.ReportListRelationFilter
+  dependencies?: Prisma.FileDependencyListRelationFilter
 }, "id">
 
 export type ScanOrderByWithAggregationInput = {
@@ -422,6 +425,7 @@ export type ScanCreateInput = {
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateInput = {
@@ -443,6 +447,7 @@ export type ScanUncheckedCreateInput = {
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanUpdateInput = {
@@ -464,6 +469,7 @@ export type ScanUpdateInput = {
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateInput = {
@@ -485,6 +491,7 @@ export type ScanUncheckedUpdateInput = {
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanCreateManyInput = {
@@ -816,6 +823,20 @@ export type ScanUpdateOneRequiredWithoutReportsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ScanUpdateToOneWithWhereWithoutReportsInput, Prisma.ScanUpdateWithoutReportsInput>, Prisma.ScanUncheckedUpdateWithoutReportsInput>
 }
 
+export type ScanCreateNestedOneWithoutDependenciesInput = {
+  create?: Prisma.XOR<Prisma.ScanCreateWithoutDependenciesInput, Prisma.ScanUncheckedCreateWithoutDependenciesInput>
+  connectOrCreate?: Prisma.ScanCreateOrConnectWithoutDependenciesInput
+  connect?: Prisma.ScanWhereUniqueInput
+}
+
+export type ScanUpdateOneRequiredWithoutDependenciesNestedInput = {
+  create?: Prisma.XOR<Prisma.ScanCreateWithoutDependenciesInput, Prisma.ScanUncheckedCreateWithoutDependenciesInput>
+  connectOrCreate?: Prisma.ScanCreateOrConnectWithoutDependenciesInput
+  upsert?: Prisma.ScanUpsertWithoutDependenciesInput
+  connect?: Prisma.ScanWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ScanUpdateToOneWithWhereWithoutDependenciesInput, Prisma.ScanUpdateWithoutDependenciesInput>, Prisma.ScanUncheckedUpdateWithoutDependenciesInput>
+}
+
 export type ScanCreateWithoutRequestedByInput = {
   id?: string
   status?: $Enums.ScanStatus
@@ -834,6 +855,7 @@ export type ScanCreateWithoutRequestedByInput = {
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutRequestedByInput = {
@@ -854,6 +876,7 @@ export type ScanUncheckedCreateWithoutRequestedByInput = {
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutRequestedByInput = {
@@ -921,6 +944,7 @@ export type ScanCreateWithoutRepoInput = {
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutRepoInput = {
@@ -941,6 +965,7 @@ export type ScanUncheckedCreateWithoutRepoInput = {
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutRepoInput = {
@@ -987,6 +1012,7 @@ export type ScanCreateWithoutNextScansInput = {
   previousScan?: Prisma.ScanCreateNestedOneWithoutNextScansInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutNextScansInput = {
@@ -1007,6 +1033,7 @@ export type ScanUncheckedCreateWithoutNextScansInput = {
   previousScanId?: string | null
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutNextScansInput = {
@@ -1032,6 +1059,7 @@ export type ScanCreateWithoutPreviousScanInput = {
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutPreviousScanInput = {
@@ -1052,6 +1080,7 @@ export type ScanUncheckedCreateWithoutPreviousScanInput = {
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutPreviousScanInput = {
@@ -1093,6 +1122,7 @@ export type ScanUpdateWithoutNextScansInput = {
   previousScan?: Prisma.ScanUpdateOneWithoutNextScansNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutNextScansInput = {
@@ -1113,6 +1143,7 @@ export type ScanUncheckedUpdateWithoutNextScansInput = {
   previousScanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUpsertWithWhereUniqueWithoutPreviousScanInput = {
@@ -1149,6 +1180,7 @@ export type ScanCreateWithoutFileScoresInput = {
   previousScan?: Prisma.ScanCreateNestedOneWithoutNextScansInput
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutFileScoresInput = {
@@ -1169,6 +1201,7 @@ export type ScanUncheckedCreateWithoutFileScoresInput = {
   previousScanId?: string | null
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutFileScoresInput = {
@@ -1205,6 +1238,7 @@ export type ScanUpdateWithoutFileScoresInput = {
   previousScan?: Prisma.ScanUpdateOneWithoutNextScansNestedInput
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutFileScoresInput = {
@@ -1225,6 +1259,7 @@ export type ScanUncheckedUpdateWithoutFileScoresInput = {
   previousScanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanCreateWithoutReportsInput = {
@@ -1245,6 +1280,7 @@ export type ScanCreateWithoutReportsInput = {
   previousScan?: Prisma.ScanCreateNestedOneWithoutNextScansInput
   nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyCreateNestedManyWithoutScanInput
 }
 
 export type ScanUncheckedCreateWithoutReportsInput = {
@@ -1265,6 +1301,7 @@ export type ScanUncheckedCreateWithoutReportsInput = {
   previousScanId?: string | null
   nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
   fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
+  dependencies?: Prisma.FileDependencyUncheckedCreateNestedManyWithoutScanInput
 }
 
 export type ScanCreateOrConnectWithoutReportsInput = {
@@ -1301,6 +1338,7 @@ export type ScanUpdateWithoutReportsInput = {
   previousScan?: Prisma.ScanUpdateOneWithoutNextScansNestedInput
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutReportsInput = {
@@ -1321,6 +1359,107 @@ export type ScanUncheckedUpdateWithoutReportsInput = {
   previousScanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
+}
+
+export type ScanCreateWithoutDependenciesInput = {
+  id?: string
+  status?: $Enums.ScanStatus
+  commitSha?: string | null
+  isAnonymous?: boolean
+  requesterIp?: string | null
+  explanationsRequested?: boolean
+  churnWindowMonths?: number
+  fileCount?: number | null
+  errorMessage?: string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  repo: Prisma.RepoCreateNestedOneWithoutScansInput
+  requestedBy?: Prisma.UserCreateNestedOneWithoutScansRequestedInput
+  previousScan?: Prisma.ScanCreateNestedOneWithoutNextScansInput
+  nextScans?: Prisma.ScanCreateNestedManyWithoutPreviousScanInput
+  fileScores?: Prisma.FileScoreCreateNestedManyWithoutScanInput
+  reports?: Prisma.ReportCreateNestedManyWithoutScanInput
+}
+
+export type ScanUncheckedCreateWithoutDependenciesInput = {
+  id?: string
+  repoId: string
+  status?: $Enums.ScanStatus
+  commitSha?: string | null
+  isAnonymous?: boolean
+  requestedById?: string | null
+  requesterIp?: string | null
+  explanationsRequested?: boolean
+  churnWindowMonths?: number
+  fileCount?: number | null
+  errorMessage?: string | null
+  startedAt?: Date | string | null
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  previousScanId?: string | null
+  nextScans?: Prisma.ScanUncheckedCreateNestedManyWithoutPreviousScanInput
+  fileScores?: Prisma.FileScoreUncheckedCreateNestedManyWithoutScanInput
+  reports?: Prisma.ReportUncheckedCreateNestedManyWithoutScanInput
+}
+
+export type ScanCreateOrConnectWithoutDependenciesInput = {
+  where: Prisma.ScanWhereUniqueInput
+  create: Prisma.XOR<Prisma.ScanCreateWithoutDependenciesInput, Prisma.ScanUncheckedCreateWithoutDependenciesInput>
+}
+
+export type ScanUpsertWithoutDependenciesInput = {
+  update: Prisma.XOR<Prisma.ScanUpdateWithoutDependenciesInput, Prisma.ScanUncheckedUpdateWithoutDependenciesInput>
+  create: Prisma.XOR<Prisma.ScanCreateWithoutDependenciesInput, Prisma.ScanUncheckedCreateWithoutDependenciesInput>
+  where?: Prisma.ScanWhereInput
+}
+
+export type ScanUpdateToOneWithWhereWithoutDependenciesInput = {
+  where?: Prisma.ScanWhereInput
+  data: Prisma.XOR<Prisma.ScanUpdateWithoutDependenciesInput, Prisma.ScanUncheckedUpdateWithoutDependenciesInput>
+}
+
+export type ScanUpdateWithoutDependenciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumScanStatusFieldUpdateOperationsInput | $Enums.ScanStatus
+  commitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requesterIp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationsRequested?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  churnWindowMonths?: Prisma.IntFieldUpdateOperationsInput | number
+  fileCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  repo?: Prisma.RepoUpdateOneRequiredWithoutScansNestedInput
+  requestedBy?: Prisma.UserUpdateOneWithoutScansRequestedNestedInput
+  previousScan?: Prisma.ScanUpdateOneWithoutNextScansNestedInput
+  nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
+  fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
+  reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+}
+
+export type ScanUncheckedUpdateWithoutDependenciesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  repoId?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumScanStatusFieldUpdateOperationsInput | $Enums.ScanStatus
+  commitSha?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  isAnonymous?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  requestedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  requesterIp?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  explanationsRequested?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  churnWindowMonths?: Prisma.IntFieldUpdateOperationsInput | number
+  fileCount?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  errorMessage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  startedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  previousScanId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
+  fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
+  reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanCreateManyRequestedByInput = {
@@ -1358,6 +1497,7 @@ export type ScanUpdateWithoutRequestedByInput = {
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutRequestedByInput = {
@@ -1378,6 +1518,7 @@ export type ScanUncheckedUpdateWithoutRequestedByInput = {
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateManyWithoutRequestedByInput = {
@@ -1432,6 +1573,7 @@ export type ScanUpdateWithoutRepoInput = {
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutRepoInput = {
@@ -1452,6 +1594,7 @@ export type ScanUncheckedUpdateWithoutRepoInput = {
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateManyWithoutRepoInput = {
@@ -1506,6 +1649,7 @@ export type ScanUpdateWithoutPreviousScanInput = {
   nextScans?: Prisma.ScanUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateWithoutPreviousScanInput = {
@@ -1526,6 +1670,7 @@ export type ScanUncheckedUpdateWithoutPreviousScanInput = {
   nextScans?: Prisma.ScanUncheckedUpdateManyWithoutPreviousScanNestedInput
   fileScores?: Prisma.FileScoreUncheckedUpdateManyWithoutScanNestedInput
   reports?: Prisma.ReportUncheckedUpdateManyWithoutScanNestedInput
+  dependencies?: Prisma.FileDependencyUncheckedUpdateManyWithoutScanNestedInput
 }
 
 export type ScanUncheckedUpdateManyWithoutPreviousScanInput = {
@@ -1554,12 +1699,14 @@ export type ScanCountOutputType = {
   nextScans: number
   fileScores: number
   reports: number
+  dependencies: number
 }
 
 export type ScanCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   nextScans?: boolean | ScanCountOutputTypeCountNextScansArgs
   fileScores?: boolean | ScanCountOutputTypeCountFileScoresArgs
   reports?: boolean | ScanCountOutputTypeCountReportsArgs
+  dependencies?: boolean | ScanCountOutputTypeCountDependenciesArgs
 }
 
 /**
@@ -1593,6 +1740,13 @@ export type ScanCountOutputTypeCountReportsArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.ReportWhereInput
 }
 
+/**
+ * ScanCountOutputType without action
+ */
+export type ScanCountOutputTypeCountDependenciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.FileDependencyWhereInput
+}
+
 
 export type ScanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -1616,6 +1770,7 @@ export type ScanSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   nextScans?: boolean | Prisma.Scan$nextScansArgs<ExtArgs>
   fileScores?: boolean | Prisma.Scan$fileScoresArgs<ExtArgs>
   reports?: boolean | Prisma.Scan$reportsArgs<ExtArgs>
+  dependencies?: boolean | Prisma.Scan$dependenciesArgs<ExtArgs>
   _count?: boolean | Prisma.ScanCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["scan"]>
 
@@ -1687,6 +1842,7 @@ export type ScanInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   nextScans?: boolean | Prisma.Scan$nextScansArgs<ExtArgs>
   fileScores?: boolean | Prisma.Scan$fileScoresArgs<ExtArgs>
   reports?: boolean | Prisma.Scan$reportsArgs<ExtArgs>
+  dependencies?: boolean | Prisma.Scan$dependenciesArgs<ExtArgs>
   _count?: boolean | Prisma.ScanCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ScanIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1709,6 +1865,7 @@ export type $ScanPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     nextScans: Prisma.$ScanPayload<ExtArgs>[]
     fileScores: Prisma.$FileScorePayload<ExtArgs>[]
     reports: Prisma.$ReportPayload<ExtArgs>[]
+    dependencies: Prisma.$FileDependencyPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -2126,6 +2283,7 @@ export interface Prisma__ScanClient<T, Null = never, ExtArgs extends runtime.Typ
   nextScans<T extends Prisma.Scan$nextScansArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Scan$nextScansArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ScanPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   fileScores<T extends Prisma.Scan$fileScoresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Scan$fileScoresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileScorePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   reports<T extends Prisma.Scan$reportsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Scan$reportsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ReportPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dependencies<T extends Prisma.Scan$dependenciesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Scan$dependenciesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$FileDependencyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2678,6 +2836,30 @@ export type Scan$reportsArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.ReportScalarFieldEnum | Prisma.ReportScalarFieldEnum[]
+}
+
+/**
+ * Scan.dependencies
+ */
+export type Scan$dependenciesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the FileDependency
+   */
+  select?: Prisma.FileDependencySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the FileDependency
+   */
+  omit?: Prisma.FileDependencyOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.FileDependencyInclude<ExtArgs> | null
+  where?: Prisma.FileDependencyWhereInput
+  orderBy?: Prisma.FileDependencyOrderByWithRelationInput | Prisma.FileDependencyOrderByWithRelationInput[]
+  cursor?: Prisma.FileDependencyWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.FileDependencyScalarFieldEnum | Prisma.FileDependencyScalarFieldEnum[]
 }
 
 /**

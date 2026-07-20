@@ -113,3 +113,21 @@ export const useDirectoryTree = () => {
     return root;
   }, [fileScores]);
 };
+
+export const useFileDependencies = (filePath: string | null) => {
+  const dependencies = useScanStore((state) => state.dependencies);
+  
+  return useMemo(() => {
+    if (!filePath) return { imports: [], importedBy: [] };
+    
+    const imports = dependencies
+      .filter((d) => d.fromPath === filePath)
+      .map((d) => d.toPath);
+      
+    const importedBy = dependencies
+      .filter((d) => d.toPath === filePath)
+      .map((d) => d.fromPath);
+      
+    return { imports, importedBy };
+  }, [dependencies, filePath]);
+};

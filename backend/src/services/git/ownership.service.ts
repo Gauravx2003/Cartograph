@@ -1,16 +1,24 @@
 import { simpleGit, type SimpleGit } from 'simple-git';
 
+export interface OwnershipContributor {
+  authorName: string;
+  authorEmail: string;
+  commits: number;
+  contributionPct: number;
+}
+
 export interface OwnershipResult {
   filePath: string;
   uniqueContributors: number;
   topContributorPercent: number;
+  contributors: OwnershipContributor[];
 }
 
 export async function getOwnership(repoPath: string): Promise<OwnershipResult[]> {
   const git: SimpleGit = simpleGit(repoPath);
   
-  // Get log with author name and files changed
-  const log = await git.raw(['log', '--name-only', '--format=AUTHOR:%an']);
+  // Get log with author name and email, and files changed
+  const log = await git.raw(['log', '--name-only', '--format=AUTHOR:%an|%ae']);
   
   const lines = log.split('\n');
   
@@ -19,6 +27,9 @@ export async function getOwnership(repoPath: string): Promise<OwnershipResult[]>
 
   for (const line of lines) {
     if (line.startsWith('AUTHOR:')) {
+      const parts = line.substring('AUTHOR:'.length).trim().split('|');
+      currentAuthor = parts[0] || '';
+      // We can store author string as 'name|email' in the map
       currentAuthor = line.substring('AUTHOR:'.length).trim();
     } else if (line.trim() !== '') {
       const file = line.trim();
@@ -47,10 +58,21 @@ export async function getOwnership(repoPath: string): Promise<OwnershipResult[]>
     
     const topContributorPercent = totalCommits > 0 ? maxCommits / totalCommits : 0;
     
+    const contributorsList: OwnershipContributor[] = Object.entries(authors).map(([authorString, commits]) => {
+      const parts = authorString.split('|');
+      return {
+        authorName: parts[0] || 'Unknown',
+        authorEmail: parts[1] || 'unknown@example.com',
+        commits,
+        contributionPct: totalCommits > 0 ? commits / totalCommits : 0
+      };
+    });
+
     results.push({
       filePath,
       uniqueContributors,
-      topContributorPercent
+      topContributorPercent,
+      contributors: contributorsList
     });
   }
 

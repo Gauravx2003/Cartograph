@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 import { useScanStore } from "../../store/scan-store";
+import { useFileDependencies } from "../../store/scan-selectors";
+import { BlastRadiusDiagram } from "./BlastRadiusDiagram";
 import { RiskBadge } from "../ranked-list/RiskBadge";
 import { AreaChart, Area, ResponsiveContainer, XAxis, Tooltip } from "recharts";
 
@@ -10,6 +12,7 @@ export const FileDetailPanel = () => {
   );
   const fileScores = useScanStore((state) => state.fileScores);
   const scanMeta = useScanStore((state) => state.scanMeta);
+  const { imports, importedBy } = useFileDependencies(selectedFilePath);
 
   const fileData = useMemo(() => {
     if (!selectedFilePath) return null;
@@ -37,15 +40,7 @@ export const FileDetailPanel = () => {
     };
   }, [fileData, fileScores]);
 
-  // Mock data for the churn graph stub
-  const mockChurnData = [
-    { date: "Week 1", commits: 2 },
-    { date: "Week 2", commits: 5 },
-    { date: "Week 3", commits: 1 },
-    { date: "Week 4", commits: 8 },
-    { date: "Week 5", commits: 0 },
-    { date: "Week 6", commits: 3 },
-  ];
+  // We will use fileData.churnHistory directly, no more mock data.
 
   if (!selectedFilePath || !fileData || !percentiles) {
     return null;
@@ -62,7 +57,7 @@ export const FileDetailPanel = () => {
       />
 
       {/* Drawer */}
-      <div className="fixed inset-y-0 right-0 w-full max-w-lg bg-canvas shadow-xl z-50 flex flex-col border-l border-hairline transform transition-transform duration-300 ease-in-out translate-x-0">
+      <div className="fixed inset-y-0 right-0 w-full max-w-[38rem] bg-canvas shadow-xl z-50 flex flex-col border-l border-hairline transform transition-transform duration-300 ease-in-out translate-x-0">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-hairline bg-surface">
           <div className="flex-1 min-w-0">
@@ -142,42 +137,44 @@ export const FileDetailPanel = () => {
             </h3>
             <div className="grid grid-cols-1 gap-3">
               {/* Length */}
-              <div className="flex flex-col p-3 rounded-lg border border-hairline bg-surface">
-                <span className="text-xs font-medium text-mute uppercase tracking-wider">
-                  File Length
-                </span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-medium text-ink">
-                    {fileData.fileLengthLines}
+              <div className="flex w-full h-full gap-3">
+                <div className="flex flex-col p-3 rounded-lg border border-hairline bg-surface w-1/2 h-full">
+                  <span className="text-xs font-medium text-mute uppercase tracking-wider">
+                    File Length
                   </span>
-                  <span className="text-xs text-mute">lines</span>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-medium text-ink">
+                      {fileData.fileLengthLines}
+                    </span>
+                    <span className="text-xs text-mute">lines</span>
+                  </div>
+                  <p className="text-xs text-mute mt-2">
+                    Longer than{" "}
+                    <strong className="font-medium text-charcoal">
+                      {percentiles.length}%
+                    </strong>{" "}
+                    of files in this repo.
+                  </p>
                 </div>
-                <p className="text-xs text-mute mt-2">
-                  Longer than{" "}
-                  <strong className="font-medium text-charcoal">
-                    {percentiles.length}%
-                  </strong>{" "}
-                  of files in this repo.
-                </p>
-              </div>
 
-              {/* Cyclomatic */}
-              <div className="flex flex-col p-3 rounded-lg border border-hairline bg-surface">
-                <span className="text-xs font-medium text-mute uppercase tracking-wider">
-                  Cyclomatic Complexity
-                </span>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="text-xl font-medium text-ink">
-                    {fileData.complexityCyclomatic}
+                {/* Cyclomatic */}
+                <div className="flex flex-col p-3 rounded-lg border border-hairline bg-surface w-1/2 h-full">
+                  <span className="text-xs font-medium text-mute uppercase tracking-wider">
+                    Cyclomatic Complexity
                   </span>
+                  <div className="flex items-baseline gap-2 mt-1">
+                    <span className="text-xl font-medium text-ink">
+                      {fileData.complexityCyclomatic}
+                    </span>
+                  </div>
+                  <p className="text-xs text-mute mt-2">
+                    More complex than{" "}
+                    <strong className="font-medium text-charcoal">
+                      {percentiles.cyclomatic}%
+                    </strong>{" "}
+                    of files in this repo.
+                  </p>
                 </div>
-                <p className="text-xs text-mute mt-2">
-                  More complex than{" "}
-                  <strong className="font-medium text-charcoal">
-                    {percentiles.cyclomatic}%
-                  </strong>{" "}
-                  of files in this repo.
-                </p>
               </div>
 
               {/* Nesting */}
@@ -216,14 +213,38 @@ export const FileDetailPanel = () => {
                   {fileData.uniqueContributors}
                 </span>
               </div>
-              <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-ink">
-                  Top Author Share
-                </span>
-                <span className="text-sm text-charcoal font-medium">
-                  {(fileData.topContributorPct * 100).toFixed(0)}%
-                </span>
-              </div>
+              {fileData.contributors && fileData.contributors.length > 0 ? (
+                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-hairline">
+                  {/* Sort contributors by contributionPct descending and map */}
+                  {[...fileData.contributors]
+                    .sort((a, b) => b.percentage - a.percentage)
+                    .map((contributor) => (
+                      <div
+                        key={contributor.id || contributor.name}
+                        className="flex justify-between items-center"
+                      >
+                        <span
+                          className="text-sm font-medium text-ink truncate mr-2"
+                          title={contributor.name}
+                        >
+                          {contributor.name}
+                        </span>
+                        <span className="text-sm text-charcoal font-medium whitespace-nowrap">
+                          {(contributor.percentage * 100).toFixed(0)}%
+                        </span>
+                      </div>
+                    ))}
+                </div>
+              ) : (
+                <div className="flex justify-between items-center mt-2">
+                  <span className="text-sm font-medium text-ink">
+                    Top Author Share
+                  </span>
+                  <span className="text-sm text-charcoal font-medium">
+                    {(fileData.topContributorPct * 100).toFixed(0)}%
+                  </span>
+                </div>
+              )}
               {fileData.topContributorPct > 0.8 && (
                 <div className="mt-3 p-2 bg-risk-high/10 rounded border border-risk-high/20 text-xs text-risk-high flex items-start gap-2">
                   <svg
@@ -239,61 +260,98 @@ export const FileDetailPanel = () => {
                     <path d="M12 8v4M12 16h.01" />
                   </svg>
                   <span>
-                    One person has made most of the recent changes to this file.
+                    {fileData.contributors && fileData.contributors.length > 0
+                      ? `${[...fileData.contributors].sort((a, b) => b.percentage - a.percentage)[0].name} has made most of the recent changes to this file.`
+                      : "One person has made most of the recent changes to this file."}
                   </span>
                 </div>
               )}
             </div>
 
             <div className="p-4 rounded-lg border border-hairline bg-surface">
-              <span className="text-xs font-medium text-mute uppercase tracking-wider mb-4 block">
-                Commit History (Stub)
+              <span className="text-xs font-medium text-mute uppercase tracking-wider block">
+                Commit History
+              </span>
+              <span className="text-xs text-mute/70 mb-4 block">
+                Commits per week over the last 6 months
               </span>
               <div className="h-32 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart
-                    data={mockChurnData}
-                    margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
-                  >
-                    <defs>
-                      <linearGradient
-                        id="colorCommits"
-                        x1="0"
-                        y1="0"
-                        x2="0"
-                        y2="1"
-                      >
-                        <stop
-                          offset="5%"
-                          stopColor="var(--color-charcoal)"
-                          stopOpacity={0.3}
-                        />
-                        <stop
-                          offset="95%"
-                          stopColor="var(--color-charcoal)"
-                          stopOpacity={0}
-                        />
-                      </linearGradient>
-                    </defs>
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "var(--color-surface)",
-                        border: "1px solid var(--color-hairline)",
-                        borderRadius: "6px",
-                        fontSize: "12px",
-                      }}
-                      itemStyle={{ color: "var(--color-ink)" }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="commits"
-                      stroke="var(--color-charcoal)"
-                      fillOpacity={1}
-                      fill="url(#colorCommits)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {fileData.churnHistory && fileData.churnHistory.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart
+                      data={fileData.churnHistory}
+                      margin={{ top: 0, right: 0, left: 0, bottom: 0 }}
+                    >
+                      <defs>
+                        <linearGradient
+                          id="colorCommits"
+                          x1="0"
+                          y1="0"
+                          x2="0"
+                          y2="1"
+                        >
+                          <stop
+                            offset="5%"
+                            stopColor="var(--color-charcoal)"
+                            stopOpacity={0.3}
+                          />
+                          <stop
+                            offset="95%"
+                            stopColor="var(--color-charcoal)"
+                            stopOpacity={0}
+                          />
+                        </linearGradient>
+                      </defs>
+                      <Tooltip
+                        labelFormatter={(label) => `${label}`}
+                        contentStyle={{
+                          backgroundColor: "var(--color-surface)",
+                          border: "1px solid var(--color-hairline)",
+                          borderRadius: "6px",
+                          fontSize: "12px",
+                        }}
+                        itemStyle={{ color: "var(--color-ink)" }}
+                      />
+                      <XAxis dataKey="date" hide={true} />
+                      <Area
+                        type="monotone"
+                        dataKey="commits"
+                        stroke="var(--color-charcoal)"
+                        fillOpacity={1}
+                        fill="url(#colorCommits)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="flex items-center justify-center h-full text-sm text-mute italic">
+                    No recent commit history available.
+                  </div>
+                )}
               </div>
+            </div>
+          </section>
+
+          {/* Connections (Dependencies) */}
+          <section>
+            <h3 className="text-sm font-medium text-ink mb-3 font-display">
+              Connections
+            </h3>
+
+            <div className="w-full">
+              {imports.length === 0 && importedBy.length === 0 ? (
+                <div className="flex flex-col p-4 rounded-lg border border-hairline bg-surface">
+                  <p className="text-sm text-mute italic">
+                    No internal imports or dependents detected.
+                  </p>
+                </div>
+              ) : (
+                <BlastRadiusDiagram
+                  selectedFilePath={selectedFilePath}
+                  fileRiskScore={fileData.riskScore}
+                  imports={imports}
+                  importedBy={importedBy}
+                />
+              )}
             </div>
           </section>
         </div>

@@ -65,7 +65,17 @@ export const Report = () => {
         .then(([metaRes, filesRes]) => {
           if (isMounted) {
             setScanMeta(metaRes.data);
-            setFileScores(filesRes.data);
+            
+            // Handle both new API format (object) and old format (array fallback just in case)
+            if (filesRes.data.fileScores) {
+              setFileScores(filesRes.data.fileScores);
+              if (filesRes.data.dependencies) {
+                useScanStore.getState().setDependencies(filesRes.data.dependencies);
+              }
+            } else {
+              setFileScores(filesRes.data);
+            }
+            
             setLoading(false);
           }
         })

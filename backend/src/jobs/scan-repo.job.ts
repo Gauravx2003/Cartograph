@@ -3,6 +3,7 @@ import { prisma } from '../db/client.js';
 import { cloneRepository } from '../services/git/clone.service.js';
 import { getChurnCounts } from '../services/git/churn.service.js';
 import { getOwnership } from '../services/git/ownership.service.js';
+import { extractDependencies } from '../services/analysis/dependency-graph.service.js';
 import { analyzeComplexity } from '../services/analysis/complexity.service.js';
 import { computeRiskScores, type FileRiskInput } from '../services/scoring/risk-score.service.js';
 import { simpleGit } from 'simple-git';
@@ -61,6 +62,9 @@ export async function processScanJob(job: Job<ScanJobData>) {
     await job.updateProgress(70);
     
     const complexity = analyzeComplexity(localPath);
+    await job.updateProgress(80);
+    
+    const dependencies = extractDependencies(localPath);
     await job.updateProgress(90);
     
     await prisma.scan.update({
@@ -78,8 +82,10 @@ export async function processScanJob(job: Job<ScanJobData>) {
         maxNestingDepth: c.maxNestingDepth,
         fileLengthLines: c.fileLength,
         churnCount: ch ? ch.commitCount : 0,
+        churnHistory: ch ? ch.history : [],
         uniqueContributors: own ? own.uniqueContributors : 0,
-        topContributorPct: own ? own.topContributorPercent : 0
+        topContributorPct: own ? own.topContributorPercent : 0,
+        contributors: own ? own.contributors : []
       };
     });
 
@@ -91,6 +97,7 @@ export async function processScanJob(job: Job<ScanJobData>) {
           scanId: scanId,
           filePath: score.filePath,
           churnCount: score.churnCount,
+          churnHistory: score.churnHistory || [],
           complexityCyclomatic: score.cyclomaticComplexity,
           complexityMaxNesting: score.maxNestingDepth,
           fileLengthLines: score.fileLengthLines,
@@ -100,6 +107,40 @@ export async function processScanJob(job: Job<ScanJobData>) {
           normalizedComplexity: score.normalizedComplexity,
           busFactorPenalty: score.busFactorPenalty,
           riskScore: score.riskScore
+        }))
+      });
+      
+      // Fetch the created scores to get their IDs
+      const createdScores = await prisma.fileScore.findMany({
+        where: { scanId },
+        select: { id: true, filePath: true }
+      });
+      
+      const filePathToId = new Map(createdScores.map(s => [s.filePath, s.id]));
+      
+      const contributorsData = scores.flatMap(score => 
+        score.contributors.map(c => ({
+          fileScoreId: filePathToId.get(score.filePath)!,
+          name: c.authorName,
+          email: c.authorEmail,
+          commitCount: c.commits,
+          percentage: c.contributionPct
+        }))
+      ).filter(c => c.fileScoreId);
+      
+      if (contributorsData.length > 0) {
+        await prisma.fileContributor.createMany({
+          data: contributorsData
+        });
+      }
+    }
+    
+    if (dependencies.length > 0) {
+      await prisma.fileDependency.createMany({
+        data: dependencies.map(dep => ({
+          scanId: scanId,
+          fromPath: dep.fromPath,
+          toPath: dep.toPath
         }))
       });
     }

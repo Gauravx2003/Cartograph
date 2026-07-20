@@ -7,7 +7,7 @@ import { optionalAuth } from './middleware/auth.middleware.js';
 import authRouter from './routes/auth.routes.js';
 import reposRouter from './routes/repos.routes.js';
 import scansRouter from './routes/scans.routes.js';
-//import reportsRouter from './routes/reports.routes.js';
+import reportsRouter from './routes/reports.routes.js';
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.get('/health', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/repos', reposRouter);
 app.use('/api/scans', scansRouter);
-//app.use('/api/reports', reportsRouter);
+app.use('/api/reports', reportsRouter);
 
 
 app.use(errorHandler);
