@@ -19,6 +19,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(optionalAuth);
 
+console.log('FRONTEND_URL at boot:', process.env.FRONTEND_URL);
+
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
 });
