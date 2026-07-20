@@ -42,7 +42,7 @@ export const ScanInProgress = ({
       errorMsg.toLowerCase().includes("private");
 
     return (
-      <div className="w-full max-w-[540px] flex flex-col items-center bg-canvas border border-hairline rounded-lg p-6 shadow-sm">
+      <div className="w-full max-w-135 flex flex-col items-center bg-canvas border border-hairline rounded-lg p-6 shadow-sm">
         <h2 className="font-sans text-lg font-medium text-ink mb-4">
           Scan Failed
         </h2>
@@ -88,7 +88,7 @@ export const ScanInProgress = ({
   const currentIndex = scan ? activeStages.indexOf(scan.status) : 0;
 
   return (
-    <div className="w-full max-w-[540px] flex flex-col items-center bg-canvas border border-hairline rounded-lg p-8 shadow-sm">
+    <div className="w-full max-w-135 flex flex-col items-center bg-canvas border border-hairline rounded-lg p-8 shadow-sm">
       <div className="font-sans text-xs text-mute font-medium uppercase tracking-wider mb-6">
         Analysis Pipeline
       </div>

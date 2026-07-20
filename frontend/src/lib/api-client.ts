@@ -1,6 +1,8 @@
 import axios from 'axios';
 
+console.log('VITE_BACKEND_URL', import.meta.env.VITE_BACKEND_URL);
+
 export const apiClient = axios.create({
-  baseURL: 'https://cartograph-jg01.onrender.com/api',
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}/api`,
   withCredentials: true,
 });

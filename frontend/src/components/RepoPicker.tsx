@@ -69,7 +69,7 @@ export const RepoPicker = ({
           />
         </div>
 
-        <div className="flex-1 max-h-[300px] overflow-y-auto">
+        <div className="flex-1 max-h-75 overflow-y-auto">
           {loading ? (
             <div className="p-4 text-center text-sm text-mute">
               Loading repositories...

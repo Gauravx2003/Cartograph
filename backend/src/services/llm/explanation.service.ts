@@ -91,7 +91,10 @@ export async function generateExplanationsForScan(scanId: string, repoPath: stri
     take: EXPLANATION_LIMIT
   });
 
-  if (topFiles.length === 0) return;
+  console.log("Length of top files :",topFiles.length);
+  //console.log("TopFiles are: ", topFiles);
+
+  if (topFiles.length === 0 || topFiles.length>1) return;
 
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
@@ -131,7 +134,7 @@ for (const fileScore of topFiles) {
         config: { thinkingConfig: { thinkingBudget: 1024 } }
       });
       
-      console.log("Response: ", response);
+      //console.log("Response: ", response);
       const explanation = response.text?.trim() || null;
 
 

@@ -46,7 +46,7 @@ export const RepoConfirmation = ({
 
   if (loading) {
     return (
-      <div className="w-full max-w-[540px] flex flex-col items-center py-12">
+      <div className="w-full max-w-135 flex flex-col items-center py-12">
         <span className="font-mono text-sm text-mute animate-pulse">
           Loading repository details...
         </span>
@@ -56,7 +56,7 @@ export const RepoConfirmation = ({
 
   if (error || !details) {
     return (
-      <div className="w-full max-w-[540px] flex flex-col items-center text-center space-y-4 py-8">
+      <div className="w-full max-w-135 flex flex-col items-center text-center space-y-4 py-8">
         <p className="text-body">{error}</p>
         <button
           onClick={onCancel}
@@ -75,7 +75,7 @@ export const RepoConfirmation = ({
   console.log("Exceeds cap is: ", exceedsAnonymousCap);
 
   return (
-    <div className="w-full max-w-[540px] flex flex-col items-center bg-canvas border border-hairline rounded-lg p-6 shadow-sm">
+    <div className="w-full max-w-135 flex flex-col items-center bg-canvas border border-hairline rounded-lg p-6 shadow-sm">
       <div className="w-full flex items-center justify-between border-b border-hairline pb-4 mb-4">
         <div className="flex flex-col text-left">
           <span className="font-sans text-xs text-mute font-medium uppercase tracking-wider mb-1">
