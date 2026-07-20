@@ -4,7 +4,7 @@ import * as path from 'path';
 import { GoogleGenAI } from '@google/genai';
 import type { FileScore } from '../../generated/prisma/client.js'
 
-const EXPLANATION_LIMIT = 5;
+const EXPLANATION_LIMIT = 1;
 
 function extractAstSignals(repoPath: string, relativeFilePath: string): string {
   try {
