@@ -88,23 +88,33 @@ export const getGithubRepoDetails = async (req: Request, res: Response, next: Ne
     
     let token = '';
     const user = req.user;
+    
+    // 1. Try to use the logged-in user's token first
     if (user && user.accessTokenEnc) {
       token = decryptToken(user.accessTokenEnc);
+    } 
+    // 2. Fallback to server token for unauthenticated users
+    else if (process.env.GITHUB_FALLBACK_TOKEN) {
+      token = process.env.GITHUB_FALLBACK_TOKEN;
     }
 
     const headers: Record<string, string> = {
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': 'Cartograph-App'
     };
+    
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
     }
 
     const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, { headers });
 
-    //console.log("Response is: ", response);
-
     if (!response.ok) {
+      // Handle Rate Limit specifically so the frontend can show a nice message
+      if (response.status === 403 && response.headers.get('x-ratelimit-remaining') === '0') {
+         res.status(429).json({ error: 'GitHub API rate limit exceeded. Please log in with GitHub to continue searching.' });
+         return;
+      }
       if (response.status === 404) {
          res.status(404).json({ error: 'Repository not found or private' });
          return;
@@ -113,8 +123,6 @@ export const getGithubRepoDetails = async (req: Request, res: Response, next: Ne
     }
 
     const repoData = await response.json() as any;
-
-    //console.log(repoData);
     
     res.json({
       name: repoData.name,
