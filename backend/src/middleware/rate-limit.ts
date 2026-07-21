@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import { redisConnection } from '../jobs/queue.js';
 
-const ANONYMOUS_SCANS_PER_HOUR_PER_IP = 5;
+const ANONYMOUS_SCANS_PER_HOUR_PER_IP = 1;
 
 export const rateLimitAnonymous = async (req: Request, res: Response, next: NextFunction) => {
   if (req.user) {
