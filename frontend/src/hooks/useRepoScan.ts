@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { apiClient } from '../lib/api-client';
+import toast from 'react-hot-toast';
 import type { RepoDetails } from '../components/RepoConfirmation';
 
 export const useRepoScan = () => {
@@ -30,10 +31,16 @@ export const useRepoScan = () => {
       console.error('Failed to start scan', err);
       // Fallback simple message, but we might want to surface specific messages 
       // from backend like rate limit hit, etc.
-      if (err.response?.data?.error) {
+      if (err.response?.status === 429) {
+        const msg = 'Anonymous Repo Scan limit has reached for you IP. Please Login to continue';
+        setError(msg);
+        toast.error(msg, { duration: 5000 });
+      } else if (err.response?.data?.error) {
         setError(err.response.data.error);
+        toast.error(err.response.data.error);
       } else {
         setError('Failed to initiate the scan. Please try again.');
+        toast.error('Failed to initiate the scan. Please try again.');
       }
       return null;
     } finally {
