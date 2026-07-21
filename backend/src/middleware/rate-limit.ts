@@ -8,7 +8,7 @@ export const rateLimitAnonymous = async (req: Request, res: Response, next: Next
     return next(); // Bypass rate limiting for authenticated users
   }
 
-  console.log("IP is: ",req.ip);
+  console.log("IP address is: ",req.ip);
 
   const ip = req.ip || 'unknown';
   const key = `ratelimit:scans:anon:${ip}`;
