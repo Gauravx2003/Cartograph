@@ -103,7 +103,7 @@ export const Home = () => {
 
             {!user && (
               <a
-                href={`${import.meta.env.VITE_BACKEND_URL}/auth/github`}
+                href={`${import.meta.env.VITE_BACKEND_URL}/api/auth/github`}
                 className="mt-2 flex items-center justify-center gap-2 text-link hover:text-ink font-sans font-medium text-sm transition-colors"
               >
                 {/* Added optional width and height to ensure the SVG scales nicely with the text */}

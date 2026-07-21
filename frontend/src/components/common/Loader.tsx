@@ -15,7 +15,7 @@ const LOADING_QUOTES = [
   "Getting there...",
   "Just a minute...",
   "Mapping dependencies...",
-  "Calculating risk scores...",
+  "Basss Pohoch hi gaya ...",
   "Almost ready...",
 ];
 
@@ -37,11 +37,11 @@ export const Loader = () => {
     return () => clearInterval(colorInterval);
   }, []);
 
-  // 2. Cycle through the loading quotes every 2.5 seconds
+  // 2. Cycle through the loading quotes every 1 seconds
   useEffect(() => {
     const quoteInterval = setInterval(() => {
       setQuoteIndex((prevIndex) => (prevIndex + 1) % LOADING_QUOTES.length);
-    }, 2500);
+    }, 1000);
 
     return () => clearInterval(quoteInterval);
   }, []);
