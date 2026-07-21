@@ -13,6 +13,10 @@ export const Report = () => {
   const setFileScores = useScanStore((state) => state.setFileScores);
   const setScanMeta = useScanStore((state) => state.setScanMeta);
   const selectedFilePath = useScanStore((state) => state.selectedFilePath);
+  const scanMeta = useScanStore((state) => state.scanMeta);
+
+  console.log("REPO: ", scanMeta?.repo);
+
   // const setSelectedFilePath = useScanStore(
   //   (state) => state.setSelectedFilePath,
   // );
@@ -160,7 +164,10 @@ export const Report = () => {
     <div className="h-screen w-screen p-6 flex flex-col bg-canvas text-ink overflow-hidden">
       <div className="flex justify-between items-center mb-6">
         <h1 className="font-display text-2xl font-medium tracking-tight">
-          Cartograph Report
+          Cartograph Report for{" "}
+          <span className="font-mono text-muted hover:text-ink transition-colors">
+            {scanMeta?.repo?.owner}/{scanMeta?.repo?.name}
+          </span>
         </h1>
         <div className="flex items-center gap-4">
           {!slug && (
