@@ -45,6 +45,11 @@ export interface ScanMeta {
   explanationsRequested: boolean;
   fileCount?: number;
   status?: string;
+  repo?: {
+    owner: string;
+    name: string;
+    defaultBranch: string;
+  };
 }
 
 interface ScanStoreState {

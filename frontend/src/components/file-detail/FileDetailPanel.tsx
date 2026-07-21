@@ -46,6 +46,12 @@ export const FileDetailPanel = () => {
     return null;
   }
 
+  const repoUrl = scanMeta?.repo ? `https://github.com/${scanMeta.repo.owner}/${scanMeta.repo.name}` : '';
+  const branch = scanMeta?.repo?.defaultBranch || 'main';
+
+  const githubBlobUrl = repoUrl && selectedFilePath ? `${repoUrl}/blob/${branch}/${selectedFilePath}` : '';
+  const githubBlameUrl = repoUrl && selectedFilePath ? `${repoUrl}/blame/${branch}/${selectedFilePath}` : '';
+
   console.log("File data is: ", fileData);
 
   return (
@@ -358,12 +364,24 @@ export const FileDetailPanel = () => {
 
         {/* Footer Actions */}
         <div className="p-4 border-t border-hairline bg-surface-soft flex gap-3">
-          <button className="flex-1 px-4 py-2 bg-charcoal text-canvas text-sm font-medium rounded-md hover:bg-ink transition-colors shadow-sm">
+          <a
+            href={githubBlobUrl || "#"}
+            target={githubBlobUrl ? "_blank" : undefined}
+            rel={githubBlobUrl ? "noopener noreferrer" : undefined}
+            className={`flex-1 px-4 py-2 bg-charcoal text-canvas text-sm font-medium rounded-md hover:bg-ink transition-colors shadow-sm text-center flex items-center justify-center ${!githubBlobUrl ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={(e) => !githubBlobUrl && e.preventDefault()}
+          >
             View on GitHub
-          </button>
-          <button className="flex-1 px-4 py-2 bg-surface text-ink border border-hairline text-sm font-medium rounded-md hover:bg-surface-soft transition-colors shadow-sm">
+          </a>
+          <a
+            href={githubBlameUrl || "#"}
+            target={githubBlameUrl ? "_blank" : undefined}
+            rel={githubBlameUrl ? "noopener noreferrer" : undefined}
+            className={`flex-1 px-4 py-2 bg-surface text-ink border border-hairline text-sm font-medium rounded-md hover:bg-surface-soft transition-colors shadow-sm text-center flex items-center justify-center ${!githubBlameUrl ? "opacity-50 cursor-not-allowed" : ""}`}
+            onClick={(e) => !githubBlameUrl && e.preventDefault()}
+          >
             Git Blame
-          </button>
+          </a>
         </div>
       </div>
     </>
