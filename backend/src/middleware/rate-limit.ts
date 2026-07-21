@@ -21,6 +21,7 @@ export const rateLimitAnonymous = async (req: Request, res: Response, next: Next
     }
 
     if (current > ANONYMOUS_SCANS_PER_HOUR_PER_IP) {
+      console.log("Rate Limit Exceeded.. for maximum files");
       res.status(429).json({ error: `Rate limit exceeded. Maximum ${ANONYMOUS_SCANS_PER_HOUR_PER_IP} anonymous scans per hour.` });
       return;
     }
