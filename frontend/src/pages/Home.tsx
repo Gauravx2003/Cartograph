@@ -9,6 +9,7 @@ import { RepoConfirmation } from "../components/RepoConfirmation";
 import type { RepoDetails } from "../components/RepoConfirmation";
 import { ScanInProgress } from "../components/ScanInProgress";
 import { useRepoScan } from "../hooks/useRepoScan";
+import { Loader } from "../components/common/Loader";
 
 export const Home = () => {
   const { user, loading } = useAuth();
@@ -20,11 +21,7 @@ export const Home = () => {
   console.log("User is: ", user);
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-canvas flex items-center justify-center">
-        <TreemapGlyph />
-      </div>
-    );
+    return <Loader />;
   }
 
   const handleRepoConfirm = (repo: string) => {
